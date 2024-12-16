@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # GLFW & GLAD Project Setup Script
 
 This script automates the setup of a new project using GLFW and GLAD on macOS. It creates a basic structure for an OpenGL project, allowing you to quickly start coding with GLFW and GLAD, and generates necessary source files, a Makefile, and a default project structure.
@@ -106,4 +105,4 @@ Before running the script, ensure you have the following tools installed:
    ```bash
    chmod +x applesilicon.sh
    ./applesilicon.sh
->>>>>>> f5939b33e745cb165083479d1f95540091a0083f
+
