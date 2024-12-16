@@ -2,7 +2,7 @@
 
 This script automates the setup of a new project using GLFW and GLAD on macOS. It creates a basic structure for an OpenGL project, allowing you to quickly start coding with GLFW and GLAD, and generates necessary source files, a Makefile, and a default project structure.
 
-![Project Demo](images/Demo.png)
+![Project Demo](Images/Demo.png)
 
 ## Prerequisites
 
