@@ -1,6 +1,6 @@
-# GLFW & GLAD Project Setup Script
+# GLFW, GLAD, CGLM & SOKOL Project Setup Script
 
-This script automates the setup of a new project using GLFW and GLAD on macOS. It creates a basic structure for an OpenGL project, allowing you to quickly start coding with GLFW and GLAD, and generates necessary source files, a Makefile, and a default project structure.
+This script automates the setup of a new project using GLFW and GLAD on macOS. It creates a basic structure for an OpenGL project, allowing you to quickly start coding with GLFW GLAD, CGLM and SOKOL and generates necessary source files, a Makefile, and a default project structure.
 
 ![Project Demo](Images/Demo.png)
 
