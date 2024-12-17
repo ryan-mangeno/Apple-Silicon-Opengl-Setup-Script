@@ -24,8 +24,33 @@ check_glad() {
         exit 1
     fi
 }
+check_cglm() {
+    if brew list cglm &>/dev/null; then
+        echo -e "\033[32m[✔] cglm is already installed.\033[0m"
+    else
+        echo -e "\033[31m[✘] cglm not found. Installing cglm via Homebrew...\033[0m"
+        brew install cglm
+        echo -e "\033[32m[✔] cglm installed.\033[0m"
+    fi
 
-# Function to set up project structure
+    CGLM_INCLUDE_DIR="$(brew --prefix cglm)/include/cglm/include/cglm/"
+    echo -e "\033[32m[✔] cglm include directory: $CGLM_INCLUDE_DIR\033[0m"
+}
+
+check_sokol() {
+    if [ ! -d "$HOME/sokol" ]; then
+        echo -e "\033[31m[✘] Sokol not found. Cloning Sokol repository...\033[0m"
+        git clone https://github.com/floooh/sokol.git $HOME/sokol
+        echo -e "\033[32m[✔] Sokol cloned to $HOME/sokol.\033[0m"
+    else
+        echo -e "\033[32m[✔] Sokol is already installed.\033[0m"
+    fi
+
+    # Set the path for Sokol include files
+    SOKOL_INCLUDE_DIR="$HOME/sokol/"
+    echo -e "\033[32m[✔] Sokol include directory: $SOKOL_INCLUDE_DIR\033[0m"
+}
+
 setup_project() {
     echo " "
     read -p "Enter project name: " project_name
@@ -37,6 +62,13 @@ setup_project() {
     cp -r ~/Downloads/glad/include/* "$project_name/include/"
     cp ~/Downloads/glad/src/glad.c "$project_name/src/"
     echo -e "\033[32m[✔] GLAD files copied to project.\033[0m"
+
+    cp -r "$(brew --prefix cglm)/include/cglm" "$project_name/include/"
+    echo -e "\033[32m[✔] cglm files copied to project.\033[0m"
+
+    # Copy Sokol headers to the project
+    cp -r $SOKOL_INCLUDE_DIR/* "$project_name/include/"
+    echo -e "\033[32m[✔] Sokol headers copied to project.\033[0m"
 
     # Prompt for language (C or C++)
     echo " "
@@ -65,8 +97,15 @@ setup_project() {
     cat > "$project_name/src/$src_file" <<EOL
 #define UNUSED __attribute__((unused))
 
+#define OPENG_INCLUDES
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#define CGLM_INCLUDE
+#include <cglm/cglm.h>
+
+#define SOKOL_INCLUDE
+#include <sokol_gfx.h>  
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -98,7 +137,7 @@ static GLFWwindow* init(void)
     }
     
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+    glfwSwapInterval(1); 
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         fprintf(stderr, "Failed to initialize GLAD\n");
@@ -143,9 +182,11 @@ INCLUDE_DIR := include
 
 GLFW_INCLUDE_DIR := /opt/homebrew/opt/glfw/include
 GLFW_LIB_DIR := /opt/homebrew/opt/glfw/lib
+CGLM_INCLUDE_DIR := /opt/homebrew/opt/cglm/include/cglm
+SOKOL_INCLUDE_DIR := /Users/$(whoami)/sokol/include  
 
 CC := $compile_cmd
-CFLAGS := -Wall -Wextra -I\$(INCLUDE_DIR) -I\$(GLFW_INCLUDE_DIR)
+CFLAGS := -Wall -Wextra -I\$(INCLUDE_DIR) -I\$(GLFW_INCLUDE_DIR) -I\$(SOKOL_INCLUDE_DIR)
 LDFLAGS := -L\$(GLFW_LIB_DIR) -lglfw -ldl -framework OpenGL -framework Cocoa
 
 SRCS := \$(wildcard \$(SRC_DIR)/*.c)
@@ -170,11 +211,13 @@ exec: \$(BUILD_DIR)/\$(PROJECT_NAME)
 .PHONY: all clean exec
 EOL
     echo -e "\033[32m[✔] Makefile created.\033[0m"
-
 }
 
 check_glfw
 check_glad
+check_cglm
+check_sokol
 setup_project
 
 echo -e "\033[32m[✔] Project setup complete!\033[0m"
+

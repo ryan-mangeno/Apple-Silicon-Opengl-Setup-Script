@@ -22,6 +22,9 @@ Before running the script, ensure you have the following tools installed:
      ```bash
      $ brew install bear
      ```
+5. **gcc/g++/clang:** C/C++ compiler
+
+6. **make**
 ## Features
 
 - **GLFW Installation**: The script checks if GLFW is installed using Homebrew. If it's not installed, it installs it automatically.
