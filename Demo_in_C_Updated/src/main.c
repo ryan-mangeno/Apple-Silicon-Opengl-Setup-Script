@@ -13,6 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static void proccess_input(GLFWwindow *window)
+{
+    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+}
+
 static void framebuffer_size_callback(UNUSED GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -55,6 +61,7 @@ static GLFWwindow* init(void)
 
 int main(UNUSED int argc, UNUSED char **argv)
 {
+
     GLFWwindow* window = init();
     if (!window) {
         return EXIT_FAILURE;
@@ -64,7 +71,11 @@ int main(UNUSED int argc, UNUSED char **argv)
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     while (!glfwWindowShouldClose(window)) {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        proccess_input(window);
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

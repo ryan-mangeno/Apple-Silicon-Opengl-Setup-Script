@@ -10,7 +10,7 @@ CGLM_INCLUDE_DIR := /opt/homebrew/opt/cglm/include/cglm
 SOKOL_INCLUDE_DIR := /Users/giorgoskir/sokol/include  
 
 CC := gcc
-CFLAGS := -Wall -Wextra -I$(INCLUDE_DIR) -I$(GLFW_INCLUDE_DIR) -I$(SOKOL_INCLUDE_DIR)
+CFLAGS := -Wall -Wextra -std=c99 -I$(INCLUDE_DIR) -I$(GLFW_INCLUDE_DIR) -I$(SOKOL_INCLUDE_DIR) 
 LDFLAGS := -L$(GLFW_LIB_DIR) -lglfw -ldl -framework OpenGL -framework Cocoa
 
 SRCS := $(wildcard $(SRC_DIR)/*.c)
@@ -33,3 +33,4 @@ exec: $(BUILD_DIR)/$(PROJECT_NAME)
 	./$(BUILD_DIR)/$(PROJECT_NAME)
 
 .PHONY: all clean exec
+
