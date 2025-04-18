@@ -216,7 +216,7 @@ EOL
 check_glfw
 check_glad
 check_cglm
-#check_sokol
+check_sokol
 setup_project
 
 echo -e "\033[32m[✔] Project setup complete!\033[0m"
