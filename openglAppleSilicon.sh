@@ -182,23 +182,33 @@ INCLUDE_DIR := include
 
 GLFW_INCLUDE_DIR := /opt/homebrew/opt/glfw/include
 GLFW_LIB_DIR := /opt/homebrew/opt/glfw/lib
-CGLM_INCLUDE_DIR := /opt/homebrew/opt/cglm/include/cglm
-SOKOL_INCLUDE_DIR := /Users/$(whoami)/sokol/include  
+SOKOL_INCLUDE_DIR := /Users/\$(whoami)/sokol/include  
 
-CC := $compile_cmd
+CXX := g++
+CC := gcc
+
+CXXFLAGS := -Wall -Wextra -I\$(INCLUDE_DIR) -I\$(GLFW_INCLUDE_DIR) -I\$(SOKOL_INCLUDE_DIR)
 CFLAGS := -Wall -Wextra -I\$(INCLUDE_DIR) -I\$(GLFW_INCLUDE_DIR) -I\$(SOKOL_INCLUDE_DIR)
-LDFLAGS := -L\$(GLFW_LIB_DIR) -lglfw -ldl -framework OpenGL -framework Cocoa
+LDFLAGS := -L\$(GLFW_LIB_DIR) -lglfw -framework OpenGL -framework Cocoa
 
-SRCS := \$(wildcard \$(SRC_DIR)/*.c)
-OBJS := \$(patsubst \$(SRC_DIR)/%.c, \$(BUILD_DIR)/%.o, \$(SRCS))
+SRCS_CPP := \$(wildcard \$(SRC_DIR)/*.cpp)
+SRCS_C := \$(SRC_DIR)/glad.c
+
+OBJS_CPP := \$(patsubst \$(SRC_DIR)/%.cpp,\$(BUILD_DIR)/%.o,\$(SRCS_CPP))
+OBJS_C := \$(patsubst \$(SRC_DIR)/%.c,\$(BUILD_DIR)/%.o,\$(SRCS_C))
+OBJS := \$(OBJS_CPP) \$(OBJS_C)
 
 all: \$(BUILD_DIR)/\$(PROJECT_NAME)
 
 \$(BUILD_DIR)/\$(PROJECT_NAME): \$(OBJS)
 	mkdir -p \$(BUILD_DIR)
-	\$(CC) \$(OBJS) -o \$(BUILD_DIR)/\$(PROJECT_NAME) \$(LDFLAGS)
+	\$(CXX) \$(OBJS) -o \$@ \$(LDFLAGS)
 
-\$(BUILD_DIR)/%.o: \$(SRC_DIR)/%.c
+\$(BUILD_DIR)/%.o: \$(SRC_DIR)/%.cpp
+	mkdir -p \$(BUILD_DIR)
+	\$(CXX) \$(CXXFLAGS) -c \$< -o \$@
+
+\$(BUILD_DIR)/glad.o: \$(SRC_DIR)/glad.c
 	mkdir -p \$(BUILD_DIR)
 	\$(CC) \$(CFLAGS) -c \$< -o \$@
 
@@ -211,6 +221,7 @@ exec: \$(BUILD_DIR)/\$(PROJECT_NAME)
 .PHONY: all clean exec
 EOL
     echo -e "\033[32m[✔] Makefile created.\033[0m"
+
 }
 
 check_glfw
